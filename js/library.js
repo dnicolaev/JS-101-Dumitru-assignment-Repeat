@@ -13,10 +13,10 @@ function LibraryOfBooks(Books) {
 var library01 = new LibraryOfBooks();
 
 function Book(title, author, numberOfPages, publishDate) {
-  this.title = title;
-  this.author = author;
-  this.numberOfPages = numberOfPages;
-  this.publishDate = publishDate;
+  this.title = title || 'No title';
+  this.author = author || 'No title';;
+  this.numberOfPages = numberOfPages || 0;
+  this.publishDate = publishDate || new Date(1899, 01, 01);
 }
 
 library01.Books.push(new Book('title00', 'author00', 100, new Date(2000, 01, 20)));
@@ -34,7 +34,7 @@ LibraryOfBooks.prototype.addBook = function(newBook) {
   for (var i = 0; i < this.Books.length; i++) {
     if (JSON.stringify(newBook).toLowerCase() === JSON.stringify(this.Books[i]).toLowerCase()) return false;
   }
-  return (this.Books.push(newBook) !== 0);
+  return (!!this.Books.push(newBook));
 };
 
 LibraryOfBooks.prototype.removeBooksByTitle = function(title) {
@@ -73,7 +73,7 @@ LibraryOfBooks.prototype.getBooksByAuthor = function(authorName) {
 
 LibraryOfBooks.prototype.addBooks = function(booksIn) {
   for (var _cnt = 0, i = 0; i < booksIn.length; i++) {
-    if (this.addBook(booksIn[i])) _cnt++;
+    this.addBook(booksIn[i]) && _cnt++;
   }
   return _cnt;
 };
