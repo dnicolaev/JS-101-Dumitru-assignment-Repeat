@@ -14,19 +14,29 @@ function Book(title, author, numberOfPages, publishDate) {
 
 function setUpLibrary01() {
   if (localStorage.getItem("Books") === null) {
-    library01.Books.push(new Book('title00', 'author00', 100, new Date(2000, 01, 20)));
-    library01.Books.push(new Book('title01', 'author01', 101, new Date(2001, 01, 21)));
-    library01.Books.push(new Book('title02', 'author02', 102, new Date(2002, 01, 22)));
-    library01.Books.push(new Book('title03', 'author03', 103, new Date(2003, 01, 23)));
-    library01.Books.push(new Book('title04', 'author04', 104, new Date(2004, 01, 24)));
-    library01.Books.push(new Book('title05', 'author05', 105, new Date(2005, 01, 25)));
-    library01.Books.push(new Book('title06', 'author06', 106, new Date(2006, 01, 26)));
-    library01.Books.push(new Book('title07', 'author07', 107, new Date(2007, 01, 27)));
-    library01.Books.push(new Book('title08', 'author08', 108, new Date(2008, 01, 28)));
-    library01.Books.push(new Book('title09', 'author09', 109, new Date(2009, 01, 29)));
-    localStorage.setItem('Books', JSON.stringify(library01.Books));
+    library01.Books.push(new Book('title00', 'author00', 100, new Date(2000, 01, 20)) );
+    library01.Books.push(new Book('title01', 'author01', 101, new Date(2001, 01, 21)) );
+    library01.Books.push(new Book('title02', 'author02', 102, new Date(2002, 01, 22)) );
+    library01.Books.push(new Book('title03', 'author03', 103, new Date(2003, 01, 23)) );
+    library01.Books.push(new Book('title04', 'author04', 104, new Date(2004, 01, 24)) );
+    library01.Books.push(new Book('title05', 'author05', 105, new Date(2005, 01, 25)) );
+    library01.saveToStorage();
   };
-  library01.Books = JSON.parse(localStorage.getItem('Books'));
+  library01.loadFromStorage();
+};
+
+LibraryOfBooks.prototype.loadFromStorage = function() {
+  this.Books = [];
+  this.addBooks ( JSON.parse(localStorage.getItem('Books')) );
+  libResultsTextareaClear();
+
+  this.Books.forEach ( function(_aBook, i) {
+    _aBook.publishDate = new Date(_aBook.publishDate);
+  });
+};
+
+LibraryOfBooks.prototype.saveToStorage = function() {
+  localStorage.setItem('Books', JSON.stringify(this.Books));
 };
 
 LibraryOfBooks.prototype.addBook = function(newBook) {
@@ -41,6 +51,7 @@ LibraryOfBooks.prototype.removeBooksByTitle = function(title) {
     (this.Books[i].title.toLowerCase() === title.toLowerCase().trim()) && this.Books.splice(i, 1);
   }
   booksToTable (this);
+  this.saveToStorage();
   printResults('removeBooksByTitle', (_len !== this.Books.length) && (_len - this.Books.length), 1)
 };
 
@@ -49,12 +60,12 @@ LibraryOfBooks.prototype.removeBooksByAuthor = function(authorName) {
     (this.Books[i].author.toLowerCase() === authorName.toLowerCase().trim()) && this.Books.splice(i, 1);
   }
   booksToTable (this);
+  this.saveToStorage();
   printResults('removeBooksByAuthor', (_len !== this.Books.length) && (_len - this.Books.length), 1)
 };
 
 LibraryOfBooks.prototype.getRandomBook = function() {
   var _random_i = Math.floor((Math.random() * this.Books.length));
-  // return (this.Books.length == 0 ? null : this.Books[_random_i]);
 
   libraryOut = new LibraryOfBooks();
   libraryOut.Books.push(this.Books[_random_i]);
@@ -84,7 +95,6 @@ LibraryOfBooks.prototype.addBooks = function(booksIn) {
   for (var _cnt = 0, i = 0; i < booksIn.length; i++) {
     this.addBook(booksIn[i]) && _cnt++;
   }
-  // return _cnt;
   printResults('addBooks', 'Where added '+_cnt + ' of ' + booksIn.length +' books.', 1)
 };
 
@@ -94,13 +104,11 @@ LibraryOfBooks.prototype.getAuthors = function() {
       authorsOut.push(this.Books[i].author);
     }
   }
-  // return authorsOut;
   printResults('getAuthors', authorsOut.join(" | "), 1)
 };
 
 LibraryOfBooks.prototype.getRandomAuthorName = function() {
   var _random_i = Math.floor((Math.random() * this.Books.length));
-  // return (this.Books.length == 0 ? null : this.Books[_random_i].author);
   printResults('getRandomAuthorName', (this.Books.length == 0 ? null : this.Books[_random_i].author), 1)
 };
 
@@ -110,16 +118,22 @@ LibraryOfBooks.prototype.getAllBooks = function() {
 
 function booksToTable (libraryIn) {
   $("#lib-table-body").empty();
-  for (var i = 0; i < libraryIn.Books.length; i++) {
-    var $_tr = $("<tr>", {id: "tr" + i});
+  libraryIn.Books.forEach ( function(_aBook, i) {
+    var $_tr = $("<tr>", {id: "tr-"+i});
     $("#lib-table-body").append($_tr);
-    $($_tr).append( tableAddDropDownBtn(i) );
+    $($_tr).append(tableAddDropDownBtn(i) );
+
     for (var key in libraryIn.Books[i]) {
-      var _td = document.createElement("td");
-      (key === "publishDate") ? _td.innerHTML = libraryIn.Books[i][key].slice(0, 10) : _td.innerHTML = libraryIn.Books[i][key];
-      $($_tr).append(_td);
+      var $_td1 = $("<td>", {id: "td-"+key+"-"+i});
+      (key === "publishDate") ? $_td1.html(libraryIn.Books[i][key].toString().slice(4, 15)) : $_td1.html(libraryIn.Books[i][key]);
+      $($_tr).append($_td1);
     }
-  }
+
+    $("#td-get-by-author-"+i).click(function() { library01.getBooksByAuthor( $("#td-author-"+i).text() ) });
+    $("#td-get-by-title-"+i).click(function() { library01.getBooksByTitle( $("#td-title-"+i).text() ) });
+    $("#td-remove-by-author-"+i).click(function() { library01.removeBooksByAuthor( $("#td-author-"+i).text() ) });
+    $("#td-remove-by-title-"+i).click(function() { library01.removeBooksByTitle( $("#td-title-"+i).text() ) });
+  });
 };
 
 function tableAddDropDownBtn (_index) {
@@ -129,26 +143,25 @@ function tableAddDropDownBtn (_index) {
       'Action<span class="caret"></span>'+
     '</button>'+
     '<ul class="dropdown-menu">'+
-      '<li><a id="td-remove-by-title" href="#">Remove by this Title</a></li>'+
-      '<li><a id="td-remove-by-author" href="#">Remove by this Author</a></li>'+
-      '<li><a id="td-get-by-author" href="#">Get books by this Title</a></li>'+
-      '<li><a id="td-get-by-title" href="#">Get books by this Author</a></li>'+
+      '<li><a id="td-remove-by-title-'+_index+'" href="#">Remove by this Title</a></li>'+
+      '<li><a id="td-remove-by-author-'+_index+'" href="#">Remove by this Author</a></li>'+
+      '<li><a id="td-get-by-title-'+_index+'" href="#">Get books by this Title</a></li>'+
+      '<li><a id="td-get-by-author-'+_index+'" href="#">Get books by this Author</a></li>'+
     '</ul>'+
   '</div>');
   return $_td;
 };
 
 function libResultsTextareaClear() {
-  document.getElementById("lib-results").value = "";
+  $("#lib-results").val("");
 };
 
 function addBookToPile() {
-  pileToAdd.Books.push(new Book(
-    $("#lib-input-title").val(),
-    $("#lib-input-author").val(),
-    $("#lib-input-pages-cnt").val(),
-    new Date(2000, 01, 20) ));
-    printResults('Book added to pile.', pileToAdd.Books.length + ' books.', 1)
+  pileToAdd.Books.push(new Book(  $("#lib-input-title").val(),
+                                  $("#lib-input-author").val(),
+                                  parseInt($("#lib-input-pages-cnt").val()),
+                                  new Date(2000, 01, 20) ) );
+  printResults('Book added to pile.', pileToAdd.Books.length + ' books.', 1)
 };
 
 function submitPile() {
@@ -172,8 +185,6 @@ function printResults(_funcName, _resultToPrint, _resultType) {
 
 $(document).ready(function(){
   setUpLibrary01();
-  // library01.getAllBooks();
-
   $("#lib-results-btn-clear").click(function() { libResultsTextareaClear() });
   $("#lib-btn-submit-pile").click(function() { submitPile() });
   $("#lib-btn-add-to-pile").click(function() { addBookToPile() });
@@ -186,7 +197,7 @@ $(document).ready(function(){
   $("#nav-get-random-book").click(function() { library01.getRandomBook() });
   $("#nav-get-random-author").click(function() { library01.getRandomAuthorName() });
   $("#nav-get-authors").click(function() { library01.getAuthors() });
-  $("#nav-set-storage").click(function() { localStorage.setItem('Books', JSON.stringify(library01.Books)); });
+  $("#nav-set-storage").click(function() { library01.saveToStorage(); });
 });
 
 // commands to test in browser console
