@@ -4,11 +4,120 @@
 <head>
   <meta charset="utf-8">
   <title>JS LibraryBooks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
-  <div>Library of Books</div>
-  <h1 id='myDiv'></h1>
+  <div class="container">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+          <a class="navbar-brand" href="#">BOOKS</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Remove books<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a id="nav-remove-by-title" href="#">Remove by Title</a></li>
+                <li><a id="nav-remove-by-author" href="#">Remove by Author</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Get books by...<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a id="nav-get-by-title" href="#">Get by Title %</a></li>
+                <li><a id="nav-get-by-author" href="#">Get by Author %</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Get random...<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a id="nav-get-random-book" href="#">Random book</a></li>
+                <li><a id="nav-get-random-author" href="#">Random Author name</a></li>
+              </ul>
+            </li>
+            <li><a id="nav-get-authors" href="#">Get Authors</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a id="nav-get-all-books" href="#">List books</a></li>
+            <li><a id="nav-set-storage" href="#">Save to storage</a></li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+      <!-- /.container-fluid -->
+    </nav>
+
+    <div class="row">
+      <div class="col-md-4 col-lib-inputs col-md-offset-0">
+        <form>
+          <div class="form-group">
+            <label for="lib-input-title">Title:</label>
+            <input type="text" class="form-control" id="lib-input-title">
+          </div>
+          <div class="form-group">
+            <label for="lib-input-author">Author:</label>
+            <input type="text" class="form-control" id="lib-input-author">
+          </div>
+          <div class="form-group">
+            <label for="lib-input-pages-cnt">Number of pages</label>
+            <div class="input-group">
+              <span class="input-group-addon">N</span>
+              <input type="number" class="form-control" id="lib-input-pages-cnt">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="lib-input-date-published">Published date</label>
+            <div class="input-group date">
+              <span class="input-group-addon glyphicon glyphicon-calendar"></span>
+              <input type="date" class="form-control" id="lib-input-date-published" max="2017-12-12">
+            </div>
+          </div>
+          <div class=text-right>
+            <button type="submit button" class="btn-sm btn-info btn" id="lib-btn-empty-books-pile">Empty pile</button>
+            <button type="submit button" class="btn-sm btn-info btn" id="lib-btn-add-to-pile">Add to pile</button>
+            <button type="submit button" class="btn-sm btn-info btn" id="lib-btn-submit-pile">Submit pile</button>
+          </div>
+        </form>
+        <div class="form-group">
+          <label for="comment">Results:</label>
+          <textarea class="form-control" rows="5" id="lib-results"></textarea>
+          <button type="submit" class="btn btn-info" id="lib-results-btn-clear">CLEAR</button>
+        </div>
+      </div>
+      <div class="col-md-8 col-lib-results">
+        <table class="table table-hover lib-table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Pages</th>
+              <th>Release</th>
+            </tr>
+          </thead>
+          <tbody id="lib-table-body">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="js/library.js"></script>
 </body>
 
